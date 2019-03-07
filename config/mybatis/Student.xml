@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.juyi.dao.StudentDao">
+	 <!-- Student关系映射 -->
+	 <resultMap type="com.juyi.model.Student" id="findStudent">
+	 	<id column="s_id" property="sId"/>
+	 	<result column="s_name" property="StudentName"/>
+	 	<result column="curriculum" property="curriculum"/>
+	 	<result column="certificate_number" property="CertificateNumber"/>
+	 	<result column="certificate" property="certificate"/>
+	 	<result column="training_time" property="trainingTime"/>
+	 	<result column="certification_date" property="certificationDate"/>
+	 	<result column="id_number" property="IDNumber"/>
+	 	<result column="school" property="school"/>
+	 </resultMap>
+	 <!-- 增加一个学员 -->
+	 <insert id="saveStudent" >
+	 	insert into 
+	 		student(s_name,curriculum,certificate_number,certificate,training_time,certification_date,id_number,school)
+	 	values
+	 		(#{StudentName},#{curriculum},#{CertificateNumber},#{certificate},#{trainingTime},#{certificationDate},#{IDNumber},#{school})
+	 </insert>
+	 
+	 <!-- 查询所有 -->
+	 <select id="findAllStudent" resultMap="findStudent">
+	 		select * from student 
+	 		<where>
+		 		<if test="StudentName != null">
+		  			AND `student`.`s_name` LIKE '%${StudentName}%'
+		  		</if>
+	  		</where>
+	  		limit #{m},#{n}
+	 </select>
+	 
+	 <!-- 查询总记录数 -->
+	<select id="findConuntStudent" resultType="Integer">
+		select count(*) from student
+		<where>
+			<if test="StudentName != null">
+		  		AND `student`.`s_name` LIKE '%${StudentName}%'
+		  	</if>
+	  	</where>
+	</select>
+	
+
+	
+	<!-- 删除一个或多个学员 -->
+	<delete id="deleteStudent" parameterType="Integer">
+ 		DELETE FROM `student` WHERE `student`.`s_id` in
+   			<foreach collection="array" item="a" open="(" separator="," close=")">
+  					#{a}
+  			</foreach>
+	</delete>
+	
+	<!-- 根据姓名和课程以及身份证号查询 -->
+	<select id="findSname" resultMap="findStudent" >
+		 SELECT 
+		 	* 
+		 FROM
+		 	 `student` 
+		WHERE
+		 `student`.`s_name`=#{student.StudentName} AND `student`.`curriculum`=#{student.curriculum} AND `student`.`id_number`=#{student.IDNumber}
+	</select>
+	
+	<!-- 根据id查询 -->
+	<select id="findId" resultMap="findStudent">
+		 SELECT  
+		 	* 
+		 FROM
+		 	 `student` 
+		WHERE
+			`student`.`s_id`=#{student.sId}
+	
+	</select>
+	
+	<!-- 修改一个学员 -->
+	<update id="updateStudent" parameterType="com.juyi.model.Student">
+	  UPDATE
+ 		 student
+  	SET
+		s_name=#{student.StudentName},certificate_number=#{student.CertificateNumber},
+		certificate=#{student.certificate},training_time=#{student.trainingTime},certification_date=#{student.certificationDate},
+		id_number=#{student.IDNumber},school=#{student.school}
+    WHERE
+  		 s_id=#{student.sId}
+	</update>
+</mapper>

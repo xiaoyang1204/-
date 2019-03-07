@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://www.springframework.org/schema/beans" 
+ xmlns:context="http://www.springframework.org/schema/context" 
+ xmlns:aop="http://www.springframework.org/schema/aop" 
+ xmlns:mvc="http://www.springframework.org/schema/mvc" 
+ xmlns:tx="http://www.springframework.org/schema/tx" 
+ xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+ http://www.springframework.org/schema/context 
+ http://www.springframework.org/schema/context/spring-context-4.3.xsd 
+ http://www.springframework.org/schema/aop 
+ http://www.springframework.org/schema/aop/spring-aop-4.3.xsd 
+ http://www.springframework.org/schema/mvc 
+ http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd 
+ http://www.springframework.org/schema/tx 
+ http://www.springframework.org/schema/tx/spring-tx-4.3.xsd ">
+ 	
+ 	<!-- 配置事务处理器 -->
+ 	<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<!-- 配置数据源 -->
+ 		<property name="dataSource" ref="dataSource"></property>
+ 	</bean>
+ 	
+ 	<!-- 通知 -->
+ 	<tx:advice transaction-manager="transactionManager" id="advice">
+ 		<!-- 增改删查 -->
+ 		<tx:attributes>
+ 		<!-- 传播行为 -->
+ 			<tx:method name="save*" propagation="REQUIRED" read-only="false"/>
+ 			<tx:method name="update*" propagation="REQUIRED" read-only="false"/>
+ 			<tx:method name="delete*" propagation="REQUIRED" read-only="false"/>
+ 			<tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+ 		</tx:attributes>
+ 	</tx:advice>
+ 	
+ 	<!-- 切面 -->
+	 <aop:config>
+	 	<aop:pointcut expression="execution(* com.juyi.service.impl.*.*(..))" id="pc"/>
+	 	<aop:advisor advice-ref="advice" pointcut-ref="pc"/>
+	 </aop:config>
+ </beans>

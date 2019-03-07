@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.juyi.dao.WeddingPhotographyDao">
+
+	<resultMap type="com.juyi.model.WeddingPhotography" id="WeddingPhotographyAll">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="phone" property="phone"/>
+		<result column="city" property="city"/>
+		<result column="identification" property="identification"/>
+		<result column="datatime" property="datatime"/>
+	</resultMap>
+	
+	<insert id="insertWeddingPhotography" parameterType="com.juyi.model.WeddingPhotography">
+		insert into wedding_photography(name,phone,city,identification,datatime)
+			values(#{weddingPhotography.name},#{weddingPhotography.phone},#{weddingPhotography.city},#{weddingPhotography.identification},#{weddingPhotography.datatime})
+	</insert>
+	 
+	<select id="findAllWeddingPhotography" resultMap="WeddingPhotographyAll">
+		select id , name , phone , city , identification , datatime from wedding_photography 
+			<where>
+				<if test="keyword != null and keyword != ''">
+					 CONCAT(IFNULL(wedding_photography.name,''),IFNULL(wedding_photography.phone,''),IFNULL(wedding_photography.city,''),IFNULL(wedding_photography.identification,'')) 
+					 LIKE '%${keyword}%'
+				</if>
+			</where>
+			 ORDER BY `wedding_photography`.`id` DESC limit #{m} , #{n}
+	</select>
+	
+	<select id="CountWeddingPhotography" resultType="Integer">
+		select count(*) from wedding_photography
+			<where>
+				<if test="keyword != null and keyword != ''">
+					 CONCAT(IFNULL(wedding_photography.name,''),IFNULL(wedding_photography.phone,''),IFNULL(wedding_photography.city,''),IFNULL(wedding_photography.identification,'')) 
+					 LIKE '%${keyword}%'
+				</if>
+			</where>
+	</select>
+	
+	<delete id="deleteWeddingPhotography" parameterType="com.juyi.model.WeddingPhotography">
+		delete from wedding_photography 
+			<where>
+				wedding_photography.id in
+					<foreach collection="array" item="a" open="(" separator="," close=")">
+						#{a}
+					</foreach>
+			</where>
+	</delete>
+</mapper>

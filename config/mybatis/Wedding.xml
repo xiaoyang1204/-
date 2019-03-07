@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.juyi.dao.WeddingDao">
+
+<!-- 数据表与实体类映射 -->
+<resultMap type="com.juyi.model.Wedding" id="findAllWedding">
+	<id column="wedding_id" property="weddingId"/>
+	<result column="name" property="name"/>
+	<result column="city" property="city"/>
+	<result column="data_time" property="dataTime"/>
+	<result column="phone" property="phone"/>
+	<result column="scene" property="scene"/>
+	<result column="style" property="scene"/>
+	<result column="budget" property="budget"/>
+	<result column="address" property="address"/>
+	<result column="input_time" property="inputTime"/>
+</resultMap>
+<!-- 保存一个婚礼预约信息 -->
+<insert id="saveWedding" parameterType="com.juyi.model.Wedding">
+	insert into 
+		wedding(name,city,data_time,phone,scene,style,budget,input_time,address) 
+	values(#{wedding.name},#{wedding.city},#{wedding.dataTime},#{wedding.phone},#{wedding.scene},#{wedding.style},
+		#{wedding.budget},#{wedding.inputTime},#{wedding.address})
+</insert>
+
+<!-- 查询所有婚礼预约信息 -->
+<select id="findAllWedding" resultMap="findAllWedding">
+	SELECT * FROM `wedding`  ORDER BY `wedding`.`wedding_id` DESC LIMIT #{m},#{n}
+</select>
+
+<!-- 查询婚礼预约的总人数 -->
+<select id="countWedding" resultType="Integer">
+	select count(*) from wedding
+</select>
+
+<!-- 根据id删除一条信息 -->
+<delete id="deleteWedding" parameterType="Integer">
+	DELETE FROM `wedding` WHERE `wedding`.`wedding_id` in
+   			<foreach collection="array" item="a" open="(" separator="," close=")">
+  					#{a}
+  			</foreach>
+</delete>
+</mapper>

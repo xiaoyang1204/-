@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.juyi.dao.adminDao">
+
+<resultMap type="com.juyi.model.admin" id="adminTable">
+	<id column="id" property="id"/>
+	<result column="username" property="username"/>
+	<result column="password" property="password"/>
+	<result column="role" property="role"/>
+</resultMap>
+
+	<select id="findAdmin" parameterType="com.juyi.model.admin" resultType="com.juyi.model.admin">
+		SELECT * FROM `admin` WHERE username=#{username} AND PASSWORD=#{password}
+	</select>
+	
+	<insert id="saveAdmin" parameterType="com.juyi.model.admin">
+		insert into admin(username,password,role)
+			values(#{admin.username},#{admin.password},#{admin.role})
+	</insert>
+	
+	<delete id="deleteAdmin" >
+		delete from admin where id in 
+			<foreach collection="array" item="a" open="(" separator="," close=")">
+				#{a}
+			</foreach>
+	</delete>
+
+	<select id="findAllAdmin" resultMap="adminTable">
+		select * from admin 
+			limit #{m},#{n}
+	</select>
+	
+	<select id="findAdminCount" resultType="Integer">
+		select count(*) from admin
+	</select>
+</mapper>
